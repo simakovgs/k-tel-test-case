@@ -23,16 +23,15 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Your API Title",
+        title="KT API Title",
         default_version='v1',
-        description="API documentation",
+        description="API documentation for KT test case",
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('kt_test_case.apps.equipment.urls')),
+    path('api/', include('kt_test_case.apps.equipment.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

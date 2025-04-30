@@ -8,4 +8,3 @@ class BaseAbstractModel(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['-id','-created_at', '-updated_at']

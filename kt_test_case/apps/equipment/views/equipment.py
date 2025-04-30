@@ -1,13 +1,12 @@
-from rest_framework import generics
+from rest_framework import permissions, viewsets
+
 from ..models import Equipment
 from ..serializers import EquipmentSerializer
 
-# Список всего оборудования + создание
-class EquipmentListCreateAPI(generics.ListCreateAPIView):
+class EquipmentViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that ...
+    """
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
-
-# Просмотр/удаление конкретного оборудования
-class EquipmentDetailAPI(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Equipment.objects.all()
-    serializer_class = EquipmentSerializer
+    permission_classes = [permissions.IsAuthenticated]

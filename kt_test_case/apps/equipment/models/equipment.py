@@ -21,3 +21,4 @@ class Equipment(BaseAbstractModel):
 
     class Meta:
         abstract = False
+        ordering = ['updated_at']

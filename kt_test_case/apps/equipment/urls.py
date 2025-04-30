@@ -1,7 +1,16 @@
 from django.urls import path
-from .views import EquipmentListCreateAPI, EquipmentDetailAPI
+
+from django.urls import include, path
+from rest_framework import routers
+
+from .views import EquipmentViewSet, EquipmentTypeViewSet
+
+router = routers.DefaultRouter()
+router.register(r'equipment', EquipmentViewSet)
+router.register(r'equipment_type', EquipmentTypeViewSet)
+
+
 
 urlpatterns = [
-    path('api/equipment/', EquipmentListCreateAPI.as_view(), name='equipment-list'),
-    path('api/equipment/<int:pk>/', EquipmentDetailAPI.as_view(), name='equipment-detail'),
+    path('', include(router.urls)),
 ]
