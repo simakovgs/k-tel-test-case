@@ -1,4 +1,4 @@
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, viewsets, generics
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -16,3 +16,14 @@ class EquipmentViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:
             return EquipmentSerializerReadOnly
         return EquipmentSerializerCreateUpdate
+
+
+class EquipmentBulkCreateAPIView(generics.CreateAPIView):
+    serializer_class = EquipmentSerializerCreateUpdate
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

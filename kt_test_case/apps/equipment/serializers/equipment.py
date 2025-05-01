@@ -19,6 +19,13 @@ class EquipmentSerializerReadOnly(serializers.HyperlinkedModelSerializer):
         ]
 
 
+class EquipmentBulkCreateSerializer(serializers.ListSerializer):
+    def create(self, validated_data):
+
+        return Equipment.objects.bulk_create(
+            [Equipment(**item) for item in validated_data]
+        )
+
 class EquipmentSerializerCreateUpdate(serializers.HyperlinkedModelSerializer):
 
     type_id = serializers.UUIDField(write_only=True)
@@ -26,6 +33,7 @@ class EquipmentSerializerCreateUpdate(serializers.HyperlinkedModelSerializer):
         read_only=True,
         view_name='equipmenttype-detail'
     )
+
 
     def validate(self, data):
         """
@@ -78,3 +86,4 @@ class EquipmentSerializerCreateUpdate(serializers.HyperlinkedModelSerializer):
             'created_at',
             'updated_at'
         ]
+        list_serializer_class = EquipmentBulkCreateSerializer
