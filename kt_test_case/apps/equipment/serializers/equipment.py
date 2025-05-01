@@ -27,7 +27,6 @@ class EquipmentSerializerCreateUpdate(serializers.HyperlinkedModelSerializer):
         queryset=EquipmentType.objects.all(),
         view_name='equipmenttype-detail',
     )
-    serial_number = serializers.CharField(required=True)
     note = serializers.CharField(required=False)
 
     def validate(self, data):
