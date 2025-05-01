@@ -17,9 +17,10 @@ class EquipmentViewSet(viewsets.ModelViewSet):
             return EquipmentSerializerReadOnly
         return EquipmentSerializerCreateUpdate
 
-
-class EquipmentBulkCreateAPIView(generics.CreateAPIView):
-    serializer_class = EquipmentSerializerCreateUpdate
+    def get_serializer(self, *args, **kwargs):
+        if self.action == 'create' and isinstance(kwargs.get('data', {}), list):
+            kwargs['many'] = True
+        return super().get_serializer(*args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)
