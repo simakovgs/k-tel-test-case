@@ -22,11 +22,12 @@ class EquipmentSerializerReadOnly(serializers.HyperlinkedModelSerializer):
 
 class EquipmentSerializerCreateUpdate(serializers.HyperlinkedModelSerializer):
 
-    type: EquipmentType = serializers.HyperlinkedRelatedField(
-        required=True,
-        queryset=EquipmentType.objects.all(),
-        view_name='equipmenttype-detail',
+    type_id = serializers.UUIDField(write_only=True)
+    type = serializers.HyperlinkedRelatedField(
+        read_only=True,
+        view_name='equipmenttype-detail'
     )
+
     note = serializers.CharField(required=False)
 
     def validate(self, data):
@@ -35,10 +36,10 @@ class EquipmentSerializerCreateUpdate(serializers.HyperlinkedModelSerializer):
         validated_data = super().validate(data)
 
         current_serial_number = validated_data['serial_number']
-        current_type: EquipmentType = validated_data['type']
+        current_type: EquipmentType = EquipmentType.objects.get(id=validated_data['type_id'])
+        print(current_type)
         current_serial_number_mask = current_type.serial_number_mask
 
-        # Проверяем соответствие длины
         if len(current_serial_number) != len(current_serial_number_mask):
             raise serializers.ValidationError({
                 'serial_number': f'Длина серийного номера должна быть {len(current_serial_number_mask)} символов'
@@ -70,12 +71,12 @@ class EquipmentSerializerCreateUpdate(serializers.HyperlinkedModelSerializer):
 
         return data
 
-
     class Meta:
         model = Equipment
         fields = [
             'id',
             'type',
+            'type_id',
             'serial_number',
             'note',
             'created_at',
