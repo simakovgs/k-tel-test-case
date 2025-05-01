@@ -14,7 +14,6 @@ class EquipmentSerializerReadOnly(serializers.HyperlinkedModelSerializer):
             'id',
             'type',
             'serial_number',
-            'note',
             'created_at',
             'updated_at'
         ]
@@ -27,8 +26,6 @@ class EquipmentSerializerCreateUpdate(serializers.HyperlinkedModelSerializer):
         read_only=True,
         view_name='equipmenttype-detail'
     )
-
-    note = serializers.CharField(required=False)
 
     def validate(self, data):
         """
@@ -78,7 +75,6 @@ class EquipmentSerializerCreateUpdate(serializers.HyperlinkedModelSerializer):
             'type',
             'type_id',
             'serial_number',
-            'note',
             'created_at',
             'updated_at'
         ]
