@@ -112,8 +112,7 @@ class EquipmentBulkCreateSerializer(serializers.ListSerializer):
                 try:
                     validate_sn(sn=item['serial_number'], snm=current_snm)
                 except serializers.ValidationError as e:
-                    errors.append(e)
-                    continue
+                    item_errors.append(e)
             else:
                 item_errors.append({
                     'type_id': f"Тип оборудования {item['type_id']} не найден"
@@ -123,7 +122,6 @@ class EquipmentBulkCreateSerializer(serializers.ListSerializer):
                 valid_data.append(item)
             else:
                 errors.append(item_errors)
-
 
         return valid_data
 
