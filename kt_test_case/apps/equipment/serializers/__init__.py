@@ -1,8 +1,10 @@
-from .equipment import EquipmentSerializerReadOnly, EquipmentSerializerCreateUpdate
+from .equipment import EquipmentSerializerReadOnly, EquipmentSerializerCreate, EquipmentSerializerPatchUpdate, EquipmentSerializerUpdate
 from .equipment_type import EquipmentTypeSerializer
 
 __all__ = [
     'EquipmentSerializerReadOnly',
-    'EquipmentSerializerCreateUpdate',
+    'EquipmentSerializerCreate',
+    'EquipmentSerializerPatchUpdate',
+    'EquipmentSerializerUpdate',
     'EquipmentTypeSerializer'
 ]

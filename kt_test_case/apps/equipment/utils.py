@@ -28,5 +28,5 @@ def validate_sn(sn: str, snm: str) -> None:
 
     if not re.match(full_pattern, sn):
         raise ValidationError({
-            'serial_number': 'Серийный номер не соответствует заданной маске'
+            'serial_number': f'Серийный номер {sn} не соответствует заданной маске {snm}'
         })
