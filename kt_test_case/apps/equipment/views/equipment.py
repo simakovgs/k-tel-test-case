@@ -35,13 +35,6 @@ class EquipmentViewSet(viewsets.ModelViewSet):
             kwargs['partial'] = True
         return super().get_serializer(*args, **kwargs)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, many=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
@@ -49,3 +42,17 @@ class EquipmentViewSet(viewsets.ModelViewSet):
         self.perform_update(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=False)
+        self.perform_create(serializer)
+
+        response_data = {
+            'created_count': len(serializer.validated_data) if hasattr(serializer, 'validated_data') else 0,
+            'created_objects': serializer.data,
+            'errors': getattr(serializer, 'validation_errors', []),
+        }
+        headers = self.get_success_headers(serializer.data)
+        status_code = status.HTTP_207_MULTI_STATUS if response_data['errors'] else status.HTTP_201_CREATED
+        return Response(response_data, status=status_code, headers=headers)

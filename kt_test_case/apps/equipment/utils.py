@@ -3,9 +3,7 @@ from rest_framework.exceptions import ValidationError
 
 def validate_sn(sn: str, snm: str) -> None:
     if len(sn) != len(snm):
-        raise ValidationError({
-            'serial_number': f'Длина серийного номера должна быть {len(snm)} символов'
-        })
+        raise ValidationError(f'Длина серийного номера должна быть {len(snm)} символов')
 
     regex_pattern = []
     for i, char in enumerate(snm):
@@ -20,13 +18,9 @@ def validate_sn(sn: str, snm: str) -> None:
         elif char == 'Z':
             regex_pattern.append('[-_@]')
         else:
-            raise ValidationError({
-                'serial_number_mask': f'Недопустимый {i} символ в маске {snm}: {char}'
-            })
+            raise ValidationError(f'Недопустимый {i} символ в маске {snm}: {char}')
 
     full_pattern = '^' + ''.join(regex_pattern) + '$'
 
     if not re.match(full_pattern, sn):
-        raise ValidationError({
-            'serial_number': f'Серийный номер {sn} не соответствует заданной маске {snm}'
-        })
+        raise ValidationError(f'Серийный номер {sn} не соответствует заданной маске {snm}')

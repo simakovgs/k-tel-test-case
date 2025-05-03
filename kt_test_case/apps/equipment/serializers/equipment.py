@@ -15,7 +15,6 @@ class EquipmentSerializerReadOnly(serializers.HyperlinkedModelSerializer):
             'updated_at'
         ]
 
-
 class EquipmentSerializerUpdate(serializers.HyperlinkedModelSerializer):
     type_id = serializers.UUIDField(write_only=True)
     type = serializers.HyperlinkedRelatedField(
@@ -93,38 +92,38 @@ class EquipmentSerializerPatchUpdate(serializers.HyperlinkedModelSerializer):
 class EquipmentBulkCreateSerializer(serializers.ListSerializer):
 
     def validate(self, data):
-
         valid_data = []
-        errors = []
+        self.validation_errors = []
 
-        for item in data:
-            item_errors = []
+        for idx, item in enumerate(data):
+            item_errors = {}
             existed_sn = Equipment.objects.filter(serial_number=item['serial_number']).first()
             current_type = EquipmentType.objects.filter(id=item['type_id']).first()
 
             if existed_sn:
-                item_errors.append({
-                    'serial_number': f"Оборудование с серийным номером {item['serial_number']} уже существует"
-                })
+                item_errors['serial_number'] = (f"Оборудование с серийным номером "
+                                                f"{item['serial_number']} "
+                                                f"уже существует")
 
             if current_type:
                 current_snm = current_type.serial_number_mask
                 try:
                     validate_sn(sn=item['serial_number'], snm=current_snm)
                 except serializers.ValidationError as e:
-                    item_errors.append(e)
+                    item_errors['serial_number'] = [str(err) for err in e.detail]
             else:
-                item_errors.append({
-                    'type_id': f"Тип оборудования {item['type_id']} не найден"
-                })
+                item_errors['type_id'] = f"Тип оборудования {item['type_id']} не найден"
 
             if not item_errors:
                 valid_data.append(item)
             else:
-                errors.append(item_errors)
+                self.validation_errors.append({
+                    'index': idx,
+                    'data': item,
+                    'errors': item_errors,
+                })
 
         return valid_data
-
 
 class EquipmentSerializerCreate(serializers.HyperlinkedModelSerializer):
     type_id = serializers.UUIDField(write_only=True, required=True)
