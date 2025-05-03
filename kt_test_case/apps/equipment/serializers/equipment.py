@@ -98,31 +98,32 @@ class EquipmentBulkCreateSerializer(serializers.ListSerializer):
         errors = []
 
         for item in data:
+            item_errors = []
             existed_sn = Equipment.objects.filter(serial_number=item['serial_number']).first()
             current_type = EquipmentType.objects.filter(id=item['type_id']).first()
 
             if existed_sn:
-                errors.append({
+                item_errors.append({
                     'serial_number': f"Оборудование с серийным номером {item['serial_number']} уже существует"
                 })
-                continue
 
-            if not current_type:
-                errors.append({
+            if current_type:
+                current_snm = current_type.serial_number_mask
+                try:
+                    validate_sn(sn=item['serial_number'], snm=current_snm)
+                except serializers.ValidationError as e:
+                    errors.append(e)
+                    continue
+            else:
+                item_errors.append({
                     'type_id': f"Тип оборудования {item['type_id']} не найден"
                 })
-                continue
 
+            if not item_errors:
+                valid_data.append(item)
+            else:
+                errors.append(item_errors)
 
-            current_snm = current_type.serial_number_mask
-
-            try:
-                validate_sn(sn=item['serial_number'], snm=current_snm)
-            except serializers.ValidationError as e:
-                errors.append(e)
-                continue
-
-            valid_data.append(item)
 
         return valid_data
 
