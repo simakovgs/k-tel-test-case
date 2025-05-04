@@ -1,4 +1,5 @@
 from rest_framework import permissions, viewsets, generics
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -9,17 +10,16 @@ from ..serializers import (
     EquipmentSerializerPatchUpdate,
     EquipmentSerializerUpdate
 )
+from ..services import EquipmentService
 
 
 class EquipmentViewSet(viewsets.ModelViewSet):
-    """
-
-    """
     queryset = Equipment.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'id'  # Это значение по умолчанию, можно явно указать
 
     def get_serializer_class(self):
-        if self.action in ['list', 'retrieve']:
+        if self.action in ['list', 'retrieve', 'by_serial_number', 'by_note']:
             return EquipmentSerializerReadOnly
         elif self.action == 'update':
             return EquipmentSerializerUpdate
@@ -27,6 +27,19 @@ class EquipmentViewSet(viewsets.ModelViewSet):
             return EquipmentSerializerPatchUpdate
         else:
             return EquipmentSerializerCreate
+
+    @action(detail=False, url_path='serial-number/(?P<serial_number>[^/.]+)')
+    def by_serial_number(self, request, serial_number):
+        equipment = EquipmentService.get_by_serial_number(serial_number)
+        if not equipment:
+            return Response(status=404)
+        return Response(self.get_serializer(equipment).data)
+
+    @action(detail=False, url_path='note/(?P<note>[^/.]+)')
+    def by_note(self, request, note):
+        equipments = EquipmentService.get_by_note(note)
+        return Response(self.get_serializer(equipments, many=True).data)
+
 
     def get_serializer(self, *args, **kwargs):
         if self.action == 'create' and isinstance(kwargs.get('data', {}), list):

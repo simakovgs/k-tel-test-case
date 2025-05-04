@@ -131,7 +131,7 @@ class EquipmentSerializerCreate(serializers.HyperlinkedModelSerializer):
         read_only=True,
         view_name='equipmenttype-detail'
     )
-    serial_number =  serializers.CharField(write_only=True, required=True)
+    serial_number =  serializers.CharField(required=True)
 
     class Meta:
         model = Equipment
