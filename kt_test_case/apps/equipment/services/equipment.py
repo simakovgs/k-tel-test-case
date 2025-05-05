@@ -11,4 +11,4 @@ class EquipmentService:
 
     @staticmethod
     def get_by_note(note):
-        return Equipment.objects.filter(note__icontains=note)
+        return Equipment.objects.filter(note=note)

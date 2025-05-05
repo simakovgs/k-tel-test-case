@@ -11,6 +11,7 @@ class EquipmentSerializerReadOnly(serializers.HyperlinkedModelSerializer):
             'id',
             'type',
             'serial_number',
+            'note',
             'created_at',
             'updated_at'
         ]
@@ -39,6 +40,7 @@ class EquipmentSerializerUpdate(serializers.HyperlinkedModelSerializer):
             'id',
             'type',
             'type_id',
+            'note',
             'serial_number',
             'created_at',
             'updated_at'
@@ -83,6 +85,7 @@ class EquipmentSerializerPatchUpdate(serializers.HyperlinkedModelSerializer):
             'id',
             'type',
             'type_id',
+            'note',
             'serial_number',
             'created_at',
             'updated_at'
@@ -132,6 +135,8 @@ class EquipmentSerializerCreate(serializers.HyperlinkedModelSerializer):
         view_name='equipmenttype-detail'
     )
     serial_number =  serializers.CharField(required=True)
+    note = serializers.CharField(max_length=150, required=False)
+
 
     class Meta:
         model = Equipment
@@ -139,6 +144,7 @@ class EquipmentSerializerCreate(serializers.HyperlinkedModelSerializer):
             'id',
             'type',
             'type_id',
+            'note',
             'serial_number',
             'created_at',
             'updated_at'
