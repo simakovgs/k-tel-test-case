@@ -29,7 +29,7 @@ CORS_ALLOWED_ORIGINS=разрешённые_домены  # Пример: http:/
 CORS_ALLOW_HEADERS=разрешённые_заголовки  # Пример: accept,accept-encoding,authorization,content-type
 ```
 
-## Разработка
+## Запуск
 
 1. Установка зависимостей:
 ```bash
