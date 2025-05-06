@@ -36,12 +36,17 @@ CORS_ALLOW_HEADERS=разрешённые_заголовки  # Пример: ac
   pip install -r requirements.txt
 ```
 
-2. Миграция базы данных:
+2. Создание cуперпользователя для авторизации:
+```bash
+python manage.py createsuperuser
+```
+
+3. Миграция базы данных:
 ```bash
   python manage.py migrate
 ```
 
-3. Запуск сервера:
+4. Запуск сервера:
 ```bash
   uvicorn kt_test_case.asgi:application
 ```
